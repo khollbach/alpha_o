@@ -1,12 +1,12 @@
 from file_io import *
 
 def main():
-    row_hints, column_hints = read_hints('problem1.txt')
+    row_hints, column_hints = read_hints('examples/problem1.txt')
 
     print(row_hints)
     print(column_hints)
 
-    board = read_solution('solution1.txt')
+    board = read_solution('examples/solution1.txt')
 
     print(board)
 
