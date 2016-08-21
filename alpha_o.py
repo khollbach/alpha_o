@@ -1,24 +1,29 @@
 from file_io import *
-from Puzzle import *
-from puzzle_logic import *
+from puzzle import *
+from csp_solver import *
+
+from datetime import datetime
 
 def main():
-    row_hints, column_hints = read_hints('examples/problem1.txt')
-    grid = read_grid('examples/solution1.txt')
+    row_constraints, column_constraints = read_constraints('examples/problem4.txt')
 
-    puzzle = Puzzle(row_hints, column_hints, grid)
+    puzzle = Puzzle(row_constraints, column_constraints)
 
-    for i in range(puzzle.get_num_rows()):
-        if not satisfies_constraint(puzzle.get_row(i), row_hints[i]):
-            print('row', i, "doesn't work.")
+    solver = CSPSolver(puzzle)
 
-    for j in range(puzzle.get_num_columns()):
-        if not satisfies_constraint(puzzle.get_column(j), column_hints[j]):
-            print('column', j, "doesn't work.")
+    print(datetime.now())
 
-    file = open('tmp.txt', 'w')
-    print(puzzle, file=file)
-    file.close()
+    try:
+        solver.backtrack()
+        print('No solution found.')
+    except PuzzleSolvedException:
+        print('Writing solution to tmp.txt ...', end='')
+        file = open('tmp.txt', 'w')
+        file.write(str(puzzle))
+        file.close()
+        print('done.')
+
+    print(datetime.now())
 
 if __name__ == '__main__':
     main()

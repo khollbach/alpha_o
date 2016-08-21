@@ -1,15 +1,15 @@
-from Color import *
+from color import *
 
-def read_hints(file_name):
+def read_constraints(file_name):
     '''(str) -> ([[int, ...], ...], [[int, ...], ...])
-    Read the hints in the file into two lists: one for rows and one for columns.
-    Each entry in the lists is itself a list containing the hints for a particular row or column.
+    Read the constraints in the file into two lists: one for rows and one for columns.
+    Each entry in the lists is itself a list containing the 'hints' for a particular row or column.
     See the examples for what the file format looks like.
     '''
     file = open(file_name)
 
-    row_hints = []
-    column_hints = []
+    row_constraints = []
+    column_constraints = []
 
     blank_lines_seen = 0
     for line in file:
@@ -19,15 +19,16 @@ def read_hints(file_name):
             blank_lines_seen += 1
         else:
             if blank_lines_seen == 0:
-                row_hints.append([int(x) for x in line.split()])
+                row_constraints.append([int(x) for x in line.split()])
             elif blank_lines_seen == 1:
-                column_hints.append([int(x) for x in line.split()])
+                column_constraints.append([int(x) for x in line.split()])
             else:
+                # More than one blank line in the file.
                 raise Exception('Bad file format.')
 
     file.close()
 
-    return row_hints, column_hints
+    return row_constraints, column_constraints
 
 def read_grid(file_name):
     '''(str) -> [[Color, ...], ...]
