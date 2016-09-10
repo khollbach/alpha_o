@@ -1,11 +1,13 @@
 from puzzle import *
 from file_io import *
 
+import sys
+
 def test(problemfile, solutionfile):
     '''(str, str)
     Run a few sanity checks.
     '''
-    r, c = read_constraints(problemfile)
+    r, c = read_hints(problemfile)
     g = read_grid(solutionfile)
     puzzle = Puzzle(r, c, g)
 
@@ -32,4 +34,9 @@ def test(problemfile, solutionfile):
             print('Bad column:', n)
 
 if __name__ == '__main__':
-    test('../examples/problems/problem4.txt', '../examples/solutions/problem4.txt')
+    if len(sys.argv) < 2:
+        print('Usage: expects filename')
+        sys.exit(1)
+        
+    filename = sys.argv[1]
+    test('../examples/problems/' + filename, '../examples/solutions/' + filename)

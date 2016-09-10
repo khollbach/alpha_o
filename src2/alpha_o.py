@@ -6,9 +6,9 @@ import sys
 from datetime import datetime
 
 def main(argv):
-    row_constraints, column_constraints = read_constraints(argv[1])
+    row_hints, column_hints = read_hints(argv[1])
 
-    puzzle = Puzzle(row_constraints, column_constraints)
+    puzzle = Puzzle(row_hints, column_hints)
 
     solver = CSPSolver(puzzle)
 
