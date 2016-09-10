@@ -1,4 +1,0 @@
-Write the pre-processing step.
-
-This will involve calculating intermediate values for rows usable in heuristics.
-So maybe just do the full optimized version, with heuristics to select unset variables, etc.
