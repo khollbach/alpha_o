@@ -2,7 +2,7 @@ from color import *
 from puzzle import *
 
 def read_hints(file_name):
-    '''(str) -> ([[int, ...], ...], [[int, ...], ...])
+    '''(str) -> ([[int]], [[int]])
     Read the hints in the file into two lists: one for rows and one for columns.
     Each entry in the lists is itself a list containing the 'hints' for a particular row or column.
     See the examples for what the file format looks like.
@@ -52,7 +52,7 @@ def read_hints(file_name):
     return row_hints, col_hints
 
 def read_grid(file_name):
-    '''(str) -> [[Color, ...], ...]
+    '''(str) -> [[Color]]
     Read a solution grid from a file.
     See the examples for what the file format looks like.
 

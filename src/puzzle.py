@@ -1,7 +1,7 @@
 from color import *
 
 def island_sizes(row_or_col):
-    '''([Color, ...]) -> [int, ...]
+    '''([Color]) -> [int]
     Return the sizes of the islands in a completely colored (no None's) row or column.
 
     >>> w, b = Color.white, Color.black
@@ -27,7 +27,7 @@ def island_sizes(row_or_col):
     return islands
 
 def satisfies_hint(row_or_col, hint):
-    '''([Color, ...], [int, ...]) -> bool
+    '''([Color], [int]) -> bool
     Return True iff the row or column has a complete coloring that agrees with the 'hint'.
 
     >>> w, b = Color.white, Color.black
@@ -39,7 +39,7 @@ def satisfies_hint(row_or_col, hint):
     return island_sizes(row_or_col) == hint
 
 def c_value(hint):
-    '''([int, ...] -> int
+    '''([int] -> int
     The C-value for a row or column is the sum of the island sizes plus (num_islands - 1).
     So, the total land mass plus the number of rivers in between islands.
     This is significant because it is the least space that these islands can take up;
