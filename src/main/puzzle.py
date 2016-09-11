@@ -2,7 +2,7 @@ from color import *
 
 def island_sizes(row_or_col):
     '''([Color]) -> [int]
-    Return the sizes of the islands in a completely colored (no None's) row or column.
+    Return the sizes of the islands in a completely colored row or column.
 
     >>> w, b = Color.white, Color.black
     >>> island_sizes([w, b, b, b, b, w, w, w, b, w, b, b, b, b, b])
@@ -76,6 +76,40 @@ def d_value(hint, length):
     '''
     return length - c_value(hint)
 
+def check_consistency(row_hints, col_hints):
+    '''([[int]], [[int]]) -> bool
+    Return False iff the hints are obviously impossible; or meaningless.
+    I.e.: non-positive island sizes, or over-crowded rows or columns.
+    '''
+    # Enusure no non-positive numbers.
+    for hints in (row_hints, col_hints):
+        for hint in hints:
+            for island in hint:
+                if island <= 0:
+                    return False
+
+    # Check consistancy of the hints with the row/column lengths.
+    for hint in row_hints:
+        if d_value(hint, len(col_hints)) < 0:
+            return False
+    for hint in col_hints:
+        if d_value(hint, len(row_hints)) < 0:
+            return False
+
+    return True
+
+def is_jagged(grid):
+    '''([[Color]]) -> bool
+    Return True iff the grid is jagged.
+    '''
+    length = None
+    for row in grid:
+        if length is None:
+            length = len(row)
+        else:
+            if len(row) != length:
+                return True
+    return False
 
 if __name__ == '__main__':
     import doctest

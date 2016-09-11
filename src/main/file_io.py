@@ -12,6 +12,8 @@ def read_hints(file_name):
     The island sizes in the hints can't be negative; and any island sizes equal to 0 will be
     ignored. Thus, use a hint containing the single island size "0" to notate a completely blank
     row or column.
+
+    Raises an exception if the hints are easily verified as impossible.
     '''
     file = open(file_name)
 
@@ -33,21 +35,10 @@ def read_hints(file_name):
                 raise Exception('Bad file format. Too many blank lines.')
 
     file.close()
-
-    # Enusure no negative numbers.
-    for hints in (row_hints, col_hints):
-        for hint in hints:
-            for island in hint:
-                if island < 0:
-                    raise Exception("Island sizes can't be negative.")
-
-    # Check consistancy of the hints with the row/column lengths.
-    for hint in row_hints:
-        if d_value(hint, len(col_hints)) < 0:
-            raise Exception('Row hint overflows row length.').
-    for hint in col_hints:
-        if d_value(hint, len(row_hints)) < 0:
-            raise Exception('Column hint overflows column length.').
+    
+    # Check consistency of hints to find obviously impossible puzzles.
+    if not check_consistency(row_hints, col_hints):
+        raise Exception('Impossible puzzle.')
 
     return row_hints, col_hints
 
@@ -87,12 +78,62 @@ def read_grid(file_name):
         grid.pop()
 
     # Ensure non-jagged grid.
-    length = None
-    for row in grid:
-        if length is None:
-            length = len(row)
-        else:
-            if len(row) != length:
-                raise Exception('Jagged grid. Row lengths do not match.')
+    if is_jagged(grid):
+        raise Exception('Jagged grid.')
 
     return grid
+
+def hints_to_str(row_hints, col_hints):
+    '''([[int]], [[int]]) -> str
+    Echo the hints to a string in the same format that is read by read_hints().
+
+    >>> hints_to_str([[2], [1, 1], []], [[2], [1], [1]])
+    '2\\n1 1\\n0\\n\\n2\\n1\\n1\\n'
+    '''
+    s = ''
+    for hints in (row_hints, col_hints):
+        for hint in hints:
+            if len(hint) == 0:
+                s += '0'
+            else:
+                s += ' '.join(str(island) for island in hint)
+            s += '\n'
+        s += '\n'
+    s = s[:-1]
+
+    return s
+
+def write_hints(row_hints, col_hints, file_name):
+    '''([[int]], [[int]], str)
+    Write the hints to a file in the same format that is read by read_hints().
+    '''
+    file = open(file_name, 'w')
+    file.write(hints_to_str(row_hints, col_hints))
+    file.close()
+
+def grid_to_str(grid):
+    '''([[Color]]) -> str
+    Echo the grid to a string in the same format that is read by read_grid().
+
+    >>> w, b, n = Color.white, Color.black, Color.none
+    >>> grid_to_str([[b, b, w], [n, n, b], [w, w, n]])
+    '##-\\n??#\\n--?\\n'
+    '''
+    s = ''
+    for row in grid:
+        for tile in row:
+            s += str(tile)
+        s += '\n'
+    return s
+
+def write_grid(grid, file_name):
+    '''([[Color]], str)
+    Write the grid to a file in the same format that is read by read_grid().
+    '''
+    file = open(file_name, 'w')
+    file.write(grid_to_str(grid))
+    file.close()
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
