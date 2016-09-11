@@ -1,4 +1,5 @@
 from color import *
+from puzzle import *
 
 def read_hints(file_name):
     '''(str) -> ([[int, ...], ...], [[int, ...], ...])
@@ -40,13 +41,13 @@ def read_hints(file_name):
                 if island < 0:
                     raise Exception("Island sizes can't be negative.")
 
-    # Check consistancy of the hints. That is, the c-value can't exceed the length of the crow.
+    # Check consistancy of the hints with the row/column lengths.
     for hint in row_hints:
-        if c_value(hint) > len(col_hints):
-            raise Exception('Row too tightly packed compared to the number of columns.').
+        if d_value(hint, len(col_hints)) < 0:
+            raise Exception('Row hint overflows row length.').
     for hint in col_hints:
-        if c_value(hint) > len(row_hints):
-            raise Exception('Column too tightly packed compared to the number of rows.').
+        if d_value(hint, len(row_hints)) < 0:
+            raise Exception('Column hint overflows column length.').
 
     return row_hints, col_hints
 
@@ -54,6 +55,18 @@ def read_grid(file_name):
     '''(str) -> [[Color, ...], ...]
     Read a solution grid from a file.
     See the examples for what the file format looks like.
+
+    Grids should look like something like this:
+    -###------
+    -#-#--##--
+    ####---##-
+    --##----##
+    --########
+    --###---##
+    --###--##-
+    ---#####--
+    ------#---
+    ----####--
     '''
     file = open(file_name)
 
@@ -68,5 +81,18 @@ def read_grid(file_name):
         grid.append(row)
 
     file.close()
+
+    # Ignore trailing newlines.
+    while len(grid) > 0 and grid[-1] == []:
+        grid.pop()
+
+    # Ensure non-jagged grid.
+    length = None
+    for row in grid:
+        if length is None:
+            length = len(row)
+        else:
+            if len(row) != length:
+                raise Exception('Jagged grid. Row lengths do not match.')
 
     return grid
