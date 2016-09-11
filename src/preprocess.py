@@ -1,6 +1,5 @@
-from puzzle import *
-
-def preprocess(puzzle):
-    '''(Puzzle) -> None
+def preprocess(row_hints, col_hints):
+    '''
+    TODO
     '''
     pass
