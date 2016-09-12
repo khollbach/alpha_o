@@ -1,0 +1,5 @@
+Implement the variable-selecting heuristic of most-colored-tiles-in-row-or-col.
+I.e. the value for var (i, j) is max(tiles_colored_in_row(i), tiles_colored_in_col(j)).
+For this, keep the data updated on every set and unset operation to make querying it constant time.
+
+Write the generic CSP solving code. Base it on the 384 handout code.
