@@ -9,6 +9,10 @@ import sys
 from datetime import datetime
 
 def main(argv):
+    if len(argv) != 2:
+        print('Usage: ' + argv[0] + ' hintfile')
+        exit(1)
+
     row_hints, column_hints = read_hints(argv[1])
 
     solver = CSPSolver(row_hints, column_hints)
