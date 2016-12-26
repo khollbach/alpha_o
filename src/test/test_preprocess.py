@@ -7,12 +7,16 @@ from color import *
 from file_io import *
 from preprocess import *
 
+example = '../../examples/problems/problem1.txt'
+
 def main():
     '''
-    Visually test the preprocess() function
+    Visually test the preprocess() function.
     '''
-    row_hints, col_hints = read_hints('../../examples/problems/problem1.txt')
+    print('Using: ' + example)
+    row_hints, col_hints = read_hints(example)
 
+    print('Column line-solving:')
     rows = []
     for hint in row_hints:
         rows.append(line_solve(hint, len(col_hints)))
@@ -21,8 +25,7 @@ def main():
             print(rows[r][c], end='')
         print()
 
-    print()
-
+    print('Row line-solving:')
     cols = []
     for hint in col_hints:
         cols.append(line_solve(hint, len(row_hints)))
@@ -31,10 +34,8 @@ def main():
             print(cols[c][r], end='')
         print()
 
-    print()
-
+    print('All preprocessing: (both row and col)')
     grid = preprocess(row_hints, col_hints)
-
     print(grid_to_str(grid))
 
 if __name__ == '__main__':
