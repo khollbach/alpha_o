@@ -14,14 +14,14 @@ def main(argv):
     solver = CSPSolver(row_hints, column_hints)
 
     print(datetime.now())
-    
+
     try:
         solver.backtrack()
         print('No solution found.')
     except PuzzleSolvedException:
         print(grid_to_str(solver.grid))
-    
+
     print(datetime.now())
-    
+
 if __name__ == '__main__':
     main(sys.argv)

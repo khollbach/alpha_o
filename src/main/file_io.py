@@ -37,7 +37,7 @@ def read_hints(file_name):
                 raise Exception('Bad file format. Too many blank lines.')
 
     file.close()
-    
+
     # Check consistency of hints to find obviously impossible puzzles.
     if not check_consistency(row_hints, col_hints):
         raise Exception('Impossible puzzle.')
