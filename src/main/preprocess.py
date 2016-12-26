@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from puzzle import *
 from color import *
 

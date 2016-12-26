@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from color import *
 
 def island_sizes(row_or_col):

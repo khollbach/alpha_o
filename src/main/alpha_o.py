@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from csp_solver import *
 from file_io import *
 from preprocess import *
