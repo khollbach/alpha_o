@@ -5,6 +5,7 @@ sys.path.insert(0, '../main')
 
 from color import *
 from file_io import *
+from puzzle import *
 from preprocess import *
 
 example = '../../examples/problems/problem1.txt'
@@ -15,28 +16,25 @@ def main():
     '''
     print('Using: ' + example)
     row_hints, col_hints = read_hints(example)
-
-    print('Column line-solving:')
-    rows = []
-    for hint in row_hints:
-        rows.append(line_solve(hint, len(col_hints)))
-    for r in range(len(row_hints)):
-        for c in range(len(col_hints)):
-            print(rows[r][c], end='')
-        print()
+    num_rows, num_cols = len(row_hints), len(col_hints)
 
     print('Row line-solving:')
-    cols = []
-    for hint in col_hints:
-        cols.append(line_solve(hint, len(row_hints)))
-    for r in range(len(row_hints)):
-        for c in range(len(col_hints)):
-            print(cols[c][r], end='')
+    rows = [line_solve(hint, num_cols) for hint in row_hints]
+    for i in range(num_rows):
+        for j in range(num_cols):
+            print(rows[i][j], end='')
+        print()
+
+    print('Column line-solving:')
+    cols = [line_solve(hint, num_rows) for hint in col_hints]
+    for i in range(num_rows):
+        for j in range(num_cols):
+            print(cols[j][i], end='')
         print()
 
     print('All preprocessing: (both row and col)')
-    grid = preprocess(row_hints, col_hints)
-    print(grid_to_str(grid))
+    puzzle = Puzzle(row_hints, col_hints)
+    print(puzzle, end='')
 
 if __name__ == '__main__':
     main()

@@ -1,12 +1,61 @@
 #!/usr/bin/python3
 
-from puzzle import *
 from color import *
+
+import puzzle
+
+def c_value(hint):
+    '''([int]) -> int
+    The C-value for a row or column is the sum of the island sizes plus
+    (num_islands - 1).  So, the total land mass plus the number of rivers in
+    between islands.
+
+    This is significant because it is the least space that these islands can
+    take up; the length of the most compacted version of this row or column.
+
+    >>> c_value([4, 1, 5])
+    12
+    >>> c_value([])  # Special case.
+    0
+    '''
+    if len(hint) == 0:
+        return 0
+    else:
+        return sum(hint) + len(hint) - 1
+
+def d_value(hint, length):
+    '''
+    The length of the row or column minus the C-value.
+
+    This is significant because it represents the degrees of freedom, or
+    'slide factor', for that row or column. Rows/columns with a D-value of 0
+    can be fully filled immediately, and ones with a D-value equals to the
+    row's/column's length are entirely blank.
+
+    A negative D-value indicates that the hint is impossible for a row/column
+    of that length.
+
+    Islands larger than the D-value for their row/column can have a number of
+    black tiles filled equal to the difference between these two values:
+    length minus D-value.
+
+    >>> d_value([4, 1, 5], 15)
+    3
+    >>> d_value([], 15)
+    15
+    >>> # The following hint is impossible to satisfy in a row of length 10.
+    >>> d_value([4, 1, 5], 10)
+    -2
+    '''
+    return length - c_value(hint)
 
 def line_solve(hint, length):
     '''([int], int) -> [Color]
-    Compute the most tile colors for a row or column given just the hint and the length.
-    This is known as line-solving and relies on the D-value and the island sizes.
+    Solve a row or column for as many tiles as possible given just the hint
+    and the length.
+
+    This is a technique I call line-solving and relies on the D-value and
+    the island sizes.
 
     >>> w, b, n = Color.white, Color.black, Color.none
     >>> line_solve([4, 1, 5], 15) == [n, n, n, b, n, n, n, n, n, n, b, b, n, n, n]
@@ -45,32 +94,36 @@ def line_solve(hint, length):
 
     return row_or_col
 
-def preprocess(row_hints, col_hints):
-    '''([[int]], [[int]]) -> [[Color]]
-    Compute the initial grid based on the preprocessing step (a.k.a. line-solving).
+def preprocess(puzzle):
+    '''(puzzle.Puzzle) -> None
+    Compute the initial grid based on the preprocessing step.
+    (I.e. perform line-solving on each row and column.)
 
     Raises an exception if a contradiction is found.
     '''
-    num_rows = len(row_hints)
-    num_cols = len(col_hints)
-
-    grid = []
-
     # Line-solve each row.
-    for r in range(num_rows):
-        grid.append(line_solve(row_hints[r], num_cols))
+    for i in range(puzzle.num_rows):
+        row = line_solve(puzzle.row_hints[i], puzzle.num_cols)
+        for j, color in enumerate(row):
+            if color != Color.none:
+                # Catch contradictions.
+                prev_color = puzzle.get(i, j)
+                if prev_color != Color.none and prev_color != color:
+                    raise Exception('Contradiction. Impossible puzzle.')
+
+                puzzle.set(i, j, color)
 
     # Line-solve each column.
-    for c in range(num_cols):
-        col = line_solve(col_hints[c], num_rows)
-        for r in range(num_rows):
-            if col[r] != Color.none:
-                if grid[r][c] != Color.none and grid[r][c] != col[r]:
+    for j in range(puzzle.num_cols):
+        col = line_solve(puzzle.col_hints[j], puzzle.num_rows)
+        for i, color in enumerate(col):
+            if color != Color.none:
+                # Catch contradictions.
+                prev_color = puzzle.get(i, j)
+                if prev_color != Color.none and prev_color != color:
                     raise Exception('Contradiction. Impossible puzzle.')
-                else:
-                    grid[r][c] = col[r]
 
-    return grid
+                puzzle.set(i, j, color)
 
 if __name__ == '__main__':
     import doctest

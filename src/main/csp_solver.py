@@ -6,22 +6,34 @@ from puzzle import *
 
 class CSPSolver:
     '''
-    A class encapsulating the logic required to solve O'Ekakki puzzles using a simple
-    backtracking algorithm.
+    A class encapsulating the logic required to solve O'Ekakki puzzles using a
+    simple backtracking algorithm.
     '''
     def __init__(self, row_hints, col_hints):
-        '''(CSPSolver, Puzzle) -> None
-        Initialize a CSPSolver for a given puzzle.
+        '''(CSPSolver, [int], [int]) -> None
+        Initialize the CSPSolver.
         '''
         self.row_hints = row_hints
         self.col_hints = col_hints
-
         self.grid = preprocess(row_hints, col_hints)
+
+
+        # Fullness stats to enable efficient variable selection.
+
+        self.row_fullness = [0] * len(self.row_hints)
+        self.col_fullness = [0] * len(self.col_hints)
+
+        for i, row in enumerate(self.grid):
+            for j, tile in enumerate(row):
+                if tile != Color.none:
+                    self.row_fullness[i] += 1
+                    self.col_fullness[j] += 1
 
     def backtrack(self, level=0):
         '''(CSPSolver, int) -> None
         Runs a backtracking algorithm on the puzzle.
-        Throws a PuzzleSolvedException if solved, returns normally if no solutions.
+        Throws a PuzzleSolvedException if solved, returns normally if no
+        solutions.
         '''
         v = self._get_unassigned_variable()
         if v is None:
@@ -49,8 +61,8 @@ class CSPSolver:
 
     def _get_unassigned_variable(self):
         '''(CSPSolver) -> (int, int)
-        Return a pair of indeces indicating an unassigned variable/tile in the puzzle/grid.
-        If no such pair exists, return None.
+        Return a pair of indeces indicating an unassigned variable/tile in the
+        puzzle/grid. If no such pair exists, return None.
         '''
         for i in range(len(self.row_hints)):
             for j in range(len(self.col_hints)):
@@ -60,12 +72,14 @@ class CSPSolver:
 
     def _get_unassigned_variable2(self):
         '''(CSPSolver) -> (int, int)
-        Return a pair of indeces indicating an unassigned variable/tile in the puzzle/grid.
-        If no such pair exists, return None.
+        Return a pair of indeces indicating an unassigned variable/tile in the
+        puzzle/grid.  If no such pair exists, return None.
 
         Uses the heuristic of most tiles filled in a row/column.
         '''
         raise Exception('NYI')
+
+        pass  # TODO
 
 class PuzzleSolvedException(Exception):
     pass

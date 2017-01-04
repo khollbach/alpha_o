@@ -1,6 +1,55 @@
 #!/usr/bin/python3
 
 from color import *
+from file_io import *
+
+import preprocess
+
+class Puzzle:
+    '''
+    A class representing a grid of tiles.
+    Tiles can be colored white/black/unknown. See Color class.
+    '''
+
+    def __init__(self, row_hints, col_hints):
+        '''(Puzzle, [int], [int]) -> None
+        '''
+        # These should remain constant once initialized.
+        self.row_hints = row_hints
+        self.col_hints = col_hints
+        self.num_rows = len(self.row_hints)
+        self.num_cols = len(self.col_hints)
+
+        self.grid = [[Color.none for j in range(self.num_cols)]
+                for i in range(self.num_rows)]
+
+        self.row_fullness = [0 for i in range(self.num_rows)]
+        self.col_fullness = [0 for j in range(self.num_cols)]
+
+        preprocess.preprocess(self)
+
+    def __str__(self):
+        '''(Puzzle) -> str
+        '''
+        return grid_to_str(self.grid)
+
+    def get(self, i, j):
+        '''(Puzzle, int, int) -> Color
+        '''
+        return self.grid[i][j]
+
+    def set(self, i, j, color):
+        '''(Puzzle, int, int, Color) -> None
+        '''
+        if not isinstance(color, Color):
+            raise ValueError('Not a color: ' + str(color))
+        if color == Color.none and self.grid[i][j] != Color.none:
+            self.row_fullness[i] -= 1
+            self.col_fullness[j] -= 1
+        if color != Color.none and self.grid[i][j] == Color.none:
+            self.row_fullness[i] += 1
+            self.col_fullness[j] += 1
+        self.grid[i][j] = color
 
 def island_sizes(row_or_col):
     '''([Color]) -> [int]
@@ -21,7 +70,8 @@ def island_sizes(row_or_col):
         elif tile == Color.black:
             current_island_size += 1
         else:
-            raise Exception("This row or column hasn't been completely colored.")
+            raise Exception("This row or column" +
+                    "hasn't been completely colored.")
 
     if current_island_size > 0:
         islands.append(current_island_size)
@@ -30,7 +80,8 @@ def island_sizes(row_or_col):
 
 def satisfies_hint(row_or_col, hint):
     '''([Color], [int]) -> bool
-    Return True iff the row or column has a complete coloring that agrees with the 'hint'.
+    Return True iff the row or column has a complete coloring that agrees with
+    the 'hint'.
 
     >>> w, b = Color.white, Color.black
     >>> satisfies_hint([w, b, b, b, b, w, w, w, b, w, b, b, b, b, b], [4, 1, 5])
@@ -40,47 +91,9 @@ def satisfies_hint(row_or_col, hint):
     '''
     return island_sizes(row_or_col) == hint
 
-def c_value(hint):
-    '''([int] -> int
-    The C-value for a row or column is the sum of the island sizes plus (num_islands - 1).
-    So, the total land mass plus the number of rivers in between islands.
-    This is significant because it is the least space that these islands can take up;
-    the length of the most compacted version of this row or column.
-
-    >>> c_value([4, 1, 5])
-    12
-    >>> c_value([])  # Special case.
-    0
-    '''
-    if len(hint) == 0:
-        return 0
-    else:
-        return sum(hint) + len(hint) - 1
-
-def d_value(hint, length):
-    '''
-    The length of the row or column minus the C-value.
-    This is significant because it represents the degrees of freedom, or 'slide factor', for that
-    row or column. Rows/columns with a D-value of 0 can be fully filled immediately, and ones with
-    a D-value equals to the row's/column's length are entirely blank.
-
-    A negative D-value indicates that the hint is impossible for a row/column of that length.
-
-    Islands larger than the D-value for their row/column can have a number of black tiles filled
-    equal to the difference between these two values: length minus D-value.
-
-    >>> d_value([4, 1, 5], 15)
-    3
-    >>> d_value([], 15)
-    15
-    >>> d_value([4, 1, 5], 10)  # !!! this hint is impossible to satisfy in a row of length 10.
-    -2
-    '''
-    return length - c_value(hint)
-
 def check_consistency(row_hints, col_hints):
     '''([[int]], [[int]]) -> bool
-    Return False iff the hints are obviously impossible; or meaningless.
+    Return False if the hints are obviously impossible, or meaningless.
     I.e.: non-positive island sizes, or over-crowded rows or columns.
     '''
     # Enusure no non-positive numbers.
@@ -102,7 +115,7 @@ def check_consistency(row_hints, col_hints):
 
 def is_jagged(grid):
     '''([[Color]]) -> bool
-    Return True iff the grid is jagged.
+    Return True if the grid is jagged.
     '''
     length = None
     for row in grid:

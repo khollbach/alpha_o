@@ -6,6 +6,7 @@ class Color(Enum):
     '''
     Represents the colors a tile can be: none (unknown), white, or black.
     '''
+
     none = 0
     white = 1
     black = 2
@@ -30,9 +31,9 @@ class Color(Enum):
 
 def parse_color(s):
     '''(str) -> Color
-    Read a single-character string, returning either a Color.
+    Read a single-character string, returning a Color.
     Specifically: '?' ==> none, '-' ==> white, '#' ==> black.
-    Raises an Exception on any other input.
+    Raises a ColorParseException on any other input.
 
     >>> parse_color('?') == Color.none
     True
@@ -48,7 +49,10 @@ def parse_color(s):
     elif s == '#':
         return Color.black
     else:
-        raise Exception('Not a color.')
+        raise ColorParseException('Not a color: ' + s)
+
+class ColorParseException(Exception):
+    pass
 
 if __name__ == '__main__':
     import doctest

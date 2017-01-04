@@ -1,21 +1,20 @@
 #!/usr/bin/python3
 
 from color import *
-from puzzle import *
 
 def read_hints(file_name):
     '''(str) -> ([[int]], [[int]])
-    Read the hints in the file into two lists: one for rows and one for columns.
-    Each entry in the lists is itself a list containing the 'hints' for a particular row or column.
-    See the examples for what the file format looks like.
+    Read the hints in the file into two lists: one for rows and one for
+    columns. Each entry in the lists is itself a list containing the 'hints'
+    for a particular row or column. See the examples for what the file format
+    looks like.
 
     Raises an exception if the file isn't in the expected format.
 
-    The island sizes in the hints can't be negative; and any island sizes equal to 0 will be
-    ignored. Thus, use a hint containing the single island size "0" to notate a completely blank
+    The island sizes in the hints can't be negative; and any island sizes
+    equal to 0 will be ignored. Thus, use a hint containing the single island
+    size "0" to notate a completely blank
     row or column.
-
-    Raises an exception if the hints are easily verified as impossible.
     '''
     file = open(file_name)
 
@@ -37,10 +36,6 @@ def read_hints(file_name):
                 raise Exception('Bad file format. Too many blank lines.')
 
     file.close()
-
-    # Check consistency of hints to find obviously impossible puzzles.
-    if not check_consistency(row_hints, col_hints):
-        raise Exception('Impossible puzzle.')
 
     return row_hints, col_hints
 
