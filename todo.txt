@@ -1,5 +1,3 @@
-Rewrite the CSP code to use the new representation of puzzles.
-
 Implement the variable-selecting heuristic of most-colored-tiles-in-row-or-col.
 I.e. the value for var (i, j) is
     max(tiles_colored_in_row(i), tiles_colored_in_col(j)).

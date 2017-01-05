@@ -6,7 +6,7 @@ sys.path.insert(0, '../main')
 from csp_solver import *
 from file_io import *
 
-example = '../../examples/problems/problem1.txt'
+example = '../../examples/problem1.txt'
 
 def main():
     '''

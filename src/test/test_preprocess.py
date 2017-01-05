@@ -8,7 +8,7 @@ from file_io import *
 from puzzle import *
 from preprocess import *
 
-example = '../../examples/problems/problem1.txt'
+example = '../../examples/problem1.txt'
 
 def main():
     '''

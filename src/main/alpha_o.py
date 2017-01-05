@@ -15,15 +15,17 @@ def main(argv):
 
     row_hints, column_hints = read_hints(argv[1])
 
-    solver = CSPSolver(row_hints, column_hints)
+    print(datetime.now())
+
+    puzzle = Puzzle(row_hints, column_hints)
 
     print(datetime.now())
 
     try:
-        solver.backtrack()
+        backtrack(puzzle)
         print('No solution found.')
     except PuzzleSolvedException:
-        print(grid_to_str(solver.grid))
+        print(puzzle)
 
     print(datetime.now())
 
