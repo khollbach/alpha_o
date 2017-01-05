@@ -20,8 +20,10 @@ class Puzzle:
         self.num_rows = len(self.row_hints)
         self.num_cols = len(self.col_hints)
 
-        self.grid = [[Color.none for j in range(self.num_cols)]
-                for i in range(self.num_rows)]
+        self.grid = [
+            [Color.none for j in range(self.num_cols)]
+                for i in range(self.num_rows)
+        ]
 
         self.row_fullness = [0 for i in range(self.num_rows)]
         self.col_fullness = [0 for j in range(self.num_cols)]

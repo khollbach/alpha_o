@@ -9,7 +9,7 @@ def backtrack(puzzle, level=0):
     Throws a PuzzleSolvedException if solved, returns normally if no
     solutions.
     '''
-    v = get_unassigned_variable(puzzle)
+    v = get_unassigned_variable2(puzzle)
     if v is None:
         raise PuzzleSolvedException('Nice!')
     i, j = v
@@ -52,7 +52,33 @@ def get_unassigned_variable2(puzzle):
 
     Uses the heuristic of most tiles filled in a row/column.
     '''
-    raise Exception('NYI')  # TODO
+    best_row_idx = None
+    max_row_fullness = -1
+    for i, fullness in enumerate(puzzle.row_fullness):
+        if fullness < puzzle.num_cols and fullness > max_row_fullness:
+            best_row_idx = i
+            max_row_fullness = fullness
+
+    best_col_idx = None
+    max_col_fullness = -1
+    for j, fullness in enumerate(puzzle.col_fullness):
+        if fullness < puzzle.num_rows and fullness > max_col_fullness:
+            best_col_idx = j
+            max_col_fullness = fullness
+
+    if max_row_fullness == -1 and max_col_fullness == -1:
+        return None
+
+    if max_row_fullness > max_col_fullness:
+        for j in range(puzzle.num_cols):
+            if puzzle.get(best_row_idx, j) == Color.none:
+                return best_row_idx, j
+        assert False
+    else:
+        for i in range(puzzle.num_rows):
+            if puzzle.get(i, best_col_idx) == Color.none:
+                return i, best_col_idx
+        assert False
 
 class PuzzleSolvedException(Exception):
     pass
