@@ -4,4 +4,5 @@ I.e. the value for var (i, j) is
 For this, keep the data updated on every set and unset operation to make
 querying it constant time.
 
-Write the generic CSP solving code. Base it on the 384 handout code.
+The above is working, but isn't generic. Make it generic using the 384 CSP
+solver code / handout pseudocode.
